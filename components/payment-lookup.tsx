@@ -114,9 +114,9 @@ export function PaymentLookup() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="p-6 bg-gradient-to-br from-muted/30 to-muted/50 border-2 rounded-xl"
+            className="p-4 sm:p-6 bg-gradient-to-br from-muted/30 to-muted/50 border-2 rounded-xl"
           >
-            <h3 className="font-semibold text-lg mb-6 flex items-center gap-2">
+            <h3 className="font-semibold text-base sm:text-lg mb-4 sm:mb-6 flex items-center gap-2">
               <motion.div
                 className="w-3 h-3 bg-blue-600 rounded-full"
                 animate={{ scale: [1, 1.2, 1] }}
@@ -124,17 +124,17 @@ export function PaymentLookup() {
               />
               Transaction Details
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Transaction ID</Label>
-                  <div className="mt-1 flex items-start gap-2">
-                    <code className="text-sm bg-background px-3 py-2 rounded border font-mono break-all flex-1 leading-relaxed">
+                  <div className="mt-1 flex flex-col sm:flex-row items-start gap-2">
+                    <code className="text-sm bg-background px-3 py-2 rounded border font-mono break-all w-full sm:flex-1 leading-relaxed">
                       {transaction.transactionId}
                     </code>
                     <button
                       onClick={() => copyToClipboard(transaction.transactionId)}
-                      className="p-2 hover:bg-muted rounded transition-colors flex-shrink-0"
+                      className="p-2 hover:bg-muted rounded transition-colors flex-shrink-0 self-start"
                       title="Copy transaction ID"
                     >
                       {copiedId === transaction.transactionId ? (
@@ -170,7 +170,7 @@ export function PaymentLookup() {
                   <Label className="text-sm font-medium text-muted-foreground">Amount</Label>
                   <div className="flex items-center gap-2 mt-1">
                     <DollarSign className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-xl font-bold">
+                    <span className="text-lg sm:text-xl font-bold break-all">
                       {transaction.amount} {transaction.currencyCode}
                     </span>
                   </div>
@@ -178,9 +178,9 @@ export function PaymentLookup() {
 
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Processed At</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
+                    <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-sm break-all">
                       {new Date(transaction.processedAt).toLocaleString()}
                     </span>
                   </div>

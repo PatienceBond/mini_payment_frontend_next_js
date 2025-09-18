@@ -1,31 +1,37 @@
-# Mini Payment Gateway UI
+# Mini Payment Frontend
 
-A modern, responsive Next.js frontend application for processing payments and managing transactions. Built with HeroUI components, TailwindCSS, and TypeScript.
+A modern, responsive Next.js frontend application for processing payments and managing transactions. Built with shadcn/ui components, TailwindCSS, and TypeScript with a focus on excellent mobile responsiveness and user experience.
 
 ## Features
 
-- 🎨 **Modern UI**: Clean and intuitive interface built with HeroUI components
-- 🌙 **Dark Mode**: Toggle between light and dark themes
-- 📱 **Responsive Design**: Mobile-first approach with responsive layouts
-- 💳 **Payment Processing**: Secure payment form with validation
-- 🔍 **Transaction Lookup**: Search and view transaction details
-- 📊 **Transaction History**: Paginated table view of all transactions
+- 🎨 **Modern UI**: Clean and intuitive interface built with shadcn/ui components
+- 📱 **Fully Responsive**: Mobile-first design with adaptive layouts for all screen sizes
+- 💳 **Payment Processing**: Secure payment form with comprehensive validation
+- 🔍 **Transaction Lookup**: Search and view detailed transaction information
+- 📊 **Payment History**: Comprehensive table view of all transactions with status indicators
+- 📋 **Copy Functionality**: One-click copy for transaction IDs with visual feedback
 - ⚡ **Real-time Updates**: Instant feedback with toast notifications
-- 🎭 **Smooth Animations**: Framer Motion animations for better UX
-- 🛡️ **Error Handling**: Comprehensive error boundaries and loading states
+- 🎭 **Smooth Animations**: Framer Motion animations for enhanced user experience
+- 🏷️ **Smart Badges**: Status badges with proper hover effects and color coding
+- 🎯 **Tab Navigation**: Responsive tab system that adapts to mobile screens
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
-- **UI Library**: HeroUI
-- **Styling**: TailwindCSS
-- **Forms**: React Hook Form + Yup validation
-- **Animations**: Framer Motion
-- **State Management**: Zustand
-- **HTTP Client**: Axios
-- **Notifications**: React Hot Toast
-- **Icons**: Lucide React
-- **Language**: TypeScript
+- **Framework**: Next.js 15.5.3 (App Router)
+- **React**: 19.1.0
+- **UI Components**: shadcn/ui (built on Radix UI)
+- **Styling**: TailwindCSS 3.3.2
+- **Forms**: React Hook Form 7.62.0 + Yup validation
+- **Animations**: Framer Motion 12.23.15
+- **State Management**: Zustand 5.0.8
+- **HTTP Client**: Axios 1.12.2
+- **Notifications**: React Hot Toast 2.6.0
+- **Icons**: Lucide React 0.544.0
+- **Language**: TypeScript 5
+- **Utilities**:
+  - clsx & tailwind-merge for conditional styling
+  - class-variance-authority for component variants
+  - tailwindcss-animate for animations
 
 ## Getting Started
 
@@ -40,7 +46,7 @@ A modern, responsive Next.js frontend application for processing payments and ma
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd mini-payment-gateway-ui
+cd mini_payment_frontend_next_js
 ```
 
 2. Install dependencies:
@@ -61,27 +67,28 @@ npm run dev
 ├── app/
 │   ├── api/                    # API routes
 │   │   └── transactions/       # Transaction API endpoints
-│   ├── components/             # React components
-│   │   ├── error-boundary.tsx  # Error boundary component
-│   │   ├── loading-spinner.tsx # Loading spinner component
-│   │   ├── navigation.tsx      # Navigation bar
-│   │   ├── payment-form.tsx    # Payment form component
-│   │   ├── result-card.tsx     # Transaction result display
-│   │   ├── transaction-lookup.tsx # Transaction lookup form
-│   │   └── transaction-table.tsx  # Transaction history table
-│   ├── providers/              # Context providers
-│   │   └── theme-provider.tsx  # Theme management
-│   ├── transactions/           # Transactions page
+│   ├── components/             # App-specific components
+│   │   └── transaction-lookup.tsx # Transaction lookup functionality
 │   ├── globals.css            # Global styles
 │   ├── layout.tsx             # Root layout
-│   └── page.tsx               # Home page
+│   └── page.tsx               # Main page with tab navigation
+├── components/
+│   ├── ui/                    # shadcn/ui components
+│   │   ├── badge.tsx          # Status badge component
+│   │   ├── button.tsx         # Button component
+│   │   ├── card.tsx           # Card component
+│   │   ├── input.tsx          # Input component
+│   │   ├── label.tsx          # Label component
+│   │   ├── select.tsx         # Select component
+│   │   └── table.tsx          # Table component
+│   ├── payment-form.tsx       # Payment creation form
+│   ├── payment-lookup.tsx     # Transaction search and details
+│   └── payments-list.tsx      # All payments table view
 ├── lib/
 │   ├── api.ts                 # API client configuration
 │   ├── hooks/                 # Custom hooks
-│   │   ├── use-entity.ts      # Generic entity CRUD hooks
-│   │   └── use-payment.ts     # Payment-specific hooks
-│   └── store/                 # State management
-│       └── payment-store.ts   # Payment state store
+│   │   └── use-payment.ts     # Payment-related hooks
+│   └── utils.ts               # Utility functions
 └── public/                    # Static assets
 ```
 
@@ -95,35 +102,50 @@ The application integrates with a backend API running on `http://localhost:5000`
 
 ## Components
 
-### PaymentForm
-- Card number, expiry, CVV, amount, and currency fields
-- Form validation using Yup schema
-- Demo data button for testing
-- Real-time form validation feedback
+### PaymentForm (`components/payment-form.tsx`)
+- Complete payment form with card details, amount, and currency
+- Comprehensive form validation using React Hook Form + Yup
+- Demo data functionality for quick testing
+- Real-time validation feedback and error handling
 
-### TransactionLookup
-- Search transactions by ID
-- Display transaction details in a formatted card
-- Error handling for not found transactions
+### PaymentLookup (`components/payment-lookup.tsx`)
+- Transaction search by ID functionality
+- Detailed transaction information display
+- Copy transaction ID with visual feedback
+- Fully responsive layout for mobile devices
+- Elegant animations and loading states
 
-### TransactionTable
-- Paginated table view of all transactions
-- Status-based color coding
-- Responsive design for mobile devices
-- Refresh functionality
+### PaymentsList (`components/payments-list.tsx`)
+- Comprehensive table view of all transactions
+- Status badges with hover effects and proper color coding
+- Copy functionality for transaction IDs
+- Responsive design that adapts to mobile screens
+- Refresh functionality with loading indicators
 
-### ResultCard
-- Display transaction results
-- Copy transaction ID functionality
-- Status indicators with appropriate colors
+### Tab Navigation (`app/page.tsx`)
+- Responsive tab system that stacks vertically on mobile
+- Smooth animations with Framer Motion
+- Abbreviated text labels for very small screens
+- Active tab indicators with layout animations
 
 ## Features in Detail
 
-### Dark Mode
-- System preference detection
-- Manual toggle in navigation
-- Persistent theme selection
-- Smooth transitions between themes
+### Mobile Responsiveness
+- Mobile-first design approach
+- Adaptive layouts for all screen sizes
+- Touch-friendly interface elements
+- Responsive typography and spacing
+
+### Copy Functionality
+- One-click copy for transaction IDs
+- Visual feedback with icon transitions (Copy → Check)
+- Toast notifications for success/failure
+- Available in both lookup and list views
+
+### Status Badges
+- Color-coded status indicators (Success: green, Failed: red, Pending: yellow)
+- Smooth hover effects with appropriate color transitions
+- Consistent styling across all components
 
 ### Form Validation
 - Real-time validation feedback
@@ -132,30 +154,31 @@ The application integrates with a backend API running on `http://localhost:5000`
 - Date validation for expiry fields
 
 ### Demo Data
-- Pre-filled test card number: `4111111111111112`
-- Even last digit for successful transactions
+- Pre-filled test card number for quick testing
+- Comprehensive demo data including all required fields
 - Quick testing without manual data entry
 
 ### Error Handling
-- Global error boundaries
-- API error handling with user-friendly messages
+- Comprehensive API error handling
+- User-friendly error messages
 - Loading states for all async operations
-- Toast notifications for user feedback
+- Toast notifications for immediate user feedback
 
 ## Development
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build for production with Turbopack
 - `npm run start` - Start production server
 
 ### Code Style
 
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for code formatting
-- Consistent component structure
+- TypeScript for complete type safety
+- Modern React patterns with hooks and functional components
+- shadcn/ui component architecture
+- Consistent file and component naming conventions
+- Responsive design patterns throughout
 
 ## Contributing
 
