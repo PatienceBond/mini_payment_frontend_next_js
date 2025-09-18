@@ -6,13 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { List, Loader2, RefreshCw } from "lucide-react";
+import { List, Loader2, RefreshCw, Copy, Check } from "lucide-react";
 import { paymentApi, Transaction } from "@/lib/api";
 import toast from "react-hot-toast";
 
 export function PaymentsList() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const fetchTransactions = async () => {
     setIsLoading(true);
@@ -30,18 +31,29 @@ export function PaymentsList() {
     fetchTransactions();
   }, []);
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(text);
+      toast.success("Transaction ID copied to clipboard");
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      toast.error("Failed to copy to clipboard");
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "success":
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 hover:bg-green-200";
       case "failed":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 hover:bg-red-200";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
     }
   };
 
@@ -106,11 +118,24 @@ export function PaymentsList() {
                   {transactions.map((transaction, index) => (
                     <TableRow key={transaction.transactionId} className="hover:bg-muted/30">
                       <TableCell className="font-mono text-sm">
-                        <code className="bg-muted px-2 py-1 rounded text-xs">
-                          {transaction.transactionId.length > 16
-                            ? `${transaction.transactionId.slice(0, 16)}...`
-                            : transaction.transactionId}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="bg-muted px-2 py-1 rounded text-xs">
+                            {transaction.transactionId.length > 16
+                              ? `${transaction.transactionId.slice(0, 16)}...`
+                              : transaction.transactionId}
+                          </code>
+                          <button
+                            onClick={() => copyToClipboard(transaction.transactionId)}
+                            className="p-1 hover:bg-muted rounded transition-colors"
+                            title="Copy transaction ID"
+                          >
+                            {copiedId === transaction.transactionId ? (
+                              <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                            )}
+                          </button>
+                        </div>
                       </TableCell>
                       <TableCell className="font-mono text-sm">
                         {transaction.maskedCardNumber}
@@ -119,7 +144,7 @@ export function PaymentsList() {
                         {transaction.amount} {transaction.currencyCode}
                       </TableCell>
                       <TableCell>
-                        <Badge className={`${getStatusColor(transaction.status)} px-2 py-1`}>
+                        <Badge className={`${getStatusColor(transaction.status)} px-2 py-1 transition-colors`}>
                           {transaction.status}
                         </Badge>
                       </TableCell>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Loader2, Calendar, DollarSign } from "lucide-react";
+import { Search, Loader2, Calendar, DollarSign, Copy, Check } from "lucide-react";
 import { paymentApi, Transaction } from "@/lib/api";
 import toast from "react-hot-toast";
 
@@ -19,6 +19,7 @@ interface LookupForm {
 export function PaymentLookup() {
   const [isLoading, setIsLoading] = useState(false);
   const [transaction, setTransaction] = useState<Transaction | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const {
     register,
@@ -40,18 +41,29 @@ export function PaymentLookup() {
     }
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(text);
+      toast.success("Transaction ID copied to clipboard");
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (error) {
+      toast.error("Failed to copy to clipboard");
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "success":
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 hover:bg-green-200";
       case "failed":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 hover:bg-red-200";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
     }
   };
 
@@ -116,10 +128,21 @@ export function PaymentLookup() {
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Transaction ID</Label>
-                  <div className="mt-1">
-                    <code className="text-sm bg-background px-3 py-2 rounded border font-mono break-all">
+                  <div className="mt-1 flex items-start gap-2">
+                    <code className="text-sm bg-background px-3 py-2 rounded border font-mono break-all flex-1 leading-relaxed">
                       {transaction.transactionId}
                     </code>
+                    <button
+                      onClick={() => copyToClipboard(transaction.transactionId)}
+                      className="p-2 hover:bg-muted rounded transition-colors flex-shrink-0"
+                      title="Copy transaction ID"
+                    >
+                      {copiedId === transaction.transactionId ? (
+                        <Check className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Copy className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                      )}
+                    </button>
                   </div>
                 </div>
 
@@ -135,7 +158,7 @@ export function PaymentLookup() {
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Status</Label>
                   <div className="mt-2">
-                    <Badge className={`${getStatusColor(transaction.status)} px-3 py-1`}>
+                    <Badge className={`${getStatusColor(transaction.status)} px-3 py-1 transition-colors`}>
                       {transaction.status}
                     </Badge>
                   </div>
@@ -146,7 +169,7 @@ export function PaymentLookup() {
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Amount</Label>
                   <div className="flex items-center gap-2 mt-1">
-                    <DollarSign className="h-5 w-5 text-green-600" />
+                    <DollarSign className="h-5 w-5 text-muted-foreground" />
                     <span className="text-xl font-bold">
                       {transaction.amount} {transaction.currencyCode}
                     </span>
@@ -156,7 +179,7 @@ export function PaymentLookup() {
                 <div>
                   <Label className="text-sm font-medium text-muted-foreground">Processed At</Label>
                   <div className="flex items-center gap-2 mt-1">
-                    <Calendar className="h-4 w-4 text-blue-600" />
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">
                       {new Date(transaction.processedAt).toLocaleString()}
                     </span>
