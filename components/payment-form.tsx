@@ -32,7 +32,13 @@ export function PaymentForm() {
     try {
       const response = await paymentApi.create(data);
       setResult(response);
-      toast.success("Payment processed successfully!");
+
+      // Check if the transaction was successful or failed
+      if (response.status === "Success") {
+        toast.success("Payment processed successfully!");
+      } else {
+        toast.error("Payment failed - transaction declined");
+      }
       reset();
     } catch (error: any) {
       toast.error(error.message || "Payment failed");
@@ -42,7 +48,12 @@ export function PaymentForm() {
   };
 
   const fillDemoData = () => {
-    setValue("cardNumber", "4111111111111111");
+    // Generate random card number with mix of odd/even endings
+    const baseCardNumber = "411111111111111";
+    const randomLastDigit = Math.floor(Math.random() * 10); // 0-9 for mix of odd/even
+    const cardNumber = baseCardNumber + randomLastDigit;
+
+    setValue("cardNumber", cardNumber);
     setValue("expiryMonth", 12);
     setValue("expiryYear", 2025);
     setValue("cvv", "123");
@@ -181,24 +192,40 @@ export function PaymentForm() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="p-6 bg-green-50 border-2 border-green-200 rounded-xl mt-6"
+            className={`p-6 border-2 rounded-xl mt-6 ${
+              result.status === "Success"
+                ? "bg-green-50 border-green-200"
+                : "bg-red-50 border-red-200"
+            }`}
           >
-            <h3 className="font-semibold text-green-700 mb-4 flex items-center gap-2">
+            <h3 className={`font-semibold mb-4 flex items-center gap-2 ${
+              result.status === "Success" ? "text-green-700" : "text-red-700"
+            }`}>
               <motion.div
-                className="w-3 h-3 bg-green-500 rounded-full"
+                className={`w-3 h-3 rounded-full ${
+                  result.status === "Success" ? "bg-green-500" : "bg-red-500"
+                }`}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2 }}
               />
-              Payment Successful!
+              {result.status === "Success" ? "Payment Successful!" : "Payment Failed!"}
             </h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Transaction ID:</span>
-                <code className="text-xs bg-green-100 px-3 py-2 rounded-lg border">{result.transactionId}</code>
+                <code className={`text-xs px-3 py-2 rounded-lg border ${
+                  result.status === "Success"
+                    ? "bg-green-100"
+                    : "bg-red-100"
+                }`}>{result.transactionId}</code>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Status:</span>
-                <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-300">
+                <Badge variant="secondary" className={
+                  result.status === "Success"
+                    ? "bg-green-100 text-green-800 border-green-300"
+                    : "bg-red-100 text-red-800 border-red-300"
+                }>
                   {result.status}
                 </Badge>
               </div>

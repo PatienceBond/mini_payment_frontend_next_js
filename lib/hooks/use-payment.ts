@@ -24,7 +24,14 @@ export function usePayment() {
 
     try {
       const response = await paymentApi.create(paymentData);
-      toast.success("Payment processed successfully!");
+
+      // Check if the transaction was successful or failed
+      if (response.status === "Success") {
+        toast.success("Payment processed successfully!");
+      } else {
+        toast.error("Payment failed - transaction declined");
+      }
+
       setRetryCount(0); // Reset retry count on success
       return response;
     } catch (err: any) {
